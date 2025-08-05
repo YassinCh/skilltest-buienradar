@@ -11,6 +11,8 @@ from .schema import StationMeasurement
 
 
 class BuienradarPipeline:
+    """The complete pipeline to load buienradar data"""
+
     def run(self) -> None:
         source = HttpSource(url=settings.source_url)
         initial_pipeline: Pipeline[FetchItem] = Pipeline(source)

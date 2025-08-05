@@ -1,174 +1,255 @@
-<div style="text-align: center; margin-bottom: 20px;">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://www.zypp.io/static/assets/img/logos/zypp/white/500px.png" width="150">
-    <source media="(prefers-color-scheme: light)" srcset="https://www.zypp.io/static/assets/img/logos/zypp/black/500px.png" width="150">
-    <img alt="Zypp logo">
-  </picture>
-</div>
+# Dutch Weather Analysis - Zypp Skill Test
 
-Zypp Skill Test: Dutch Weather Analysis
-===
+A Python application for collecting, analyzing, and visualizing Dutch weather data from the Buienradar API.
 
-> Skilltest designed for Zypp's Recruitment process
+## 🚀 Quick Start
 
-**Time Cap:** 4 hours  
-**Coding Skills:** Python, SQL, optional: HTML, CSS, JavaScript  
-**Fundamental Skills:**
+This project uses [uv](https://github.com/astral-sh/uv) for fast Python package management and virtual environment handling.
 
-- Data Integration
-- Data Modeling
-- Data Analysis
-- Automation or Data Visualization  
-<br>
+### Prerequisites
 
-[![Open Source](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://opensource.org/)
+- Python 3.10+
+- [uv](https://github.com/astral-sh/uv) installed
 
-# Table of Contents
+### Installation
 
-1. [Introduction Skilltest](#introduction)
-   - Our expectations
-2. [The test: Dutch Weather Analysis](#the-test-dutch-weather-analysis)
-   - Case introduction
-   - Instructions
-   - Guidelines
-3. [Part 1: Data Integration](#part-1-data-integration)
-   - Question 1: Create station measurement data
-   - Question 2: Create weather station data
-   - Question 3: Store data in an SQL database
-   - Question 4: Create an ERD of the SQL database
-4. [Part 2: Data Analysis](#part-2-data-analysis)
-   - Question 5: Find the weather station with the highest temperature
-   - Question 6: Calculate the average temperature
-   - Question 7: Identify the coldest time of the day
-   - Question 8: Locate the weather station in the North Sea
-5. [Part 3: Automation](#part-3-automation-or-data-visualization)
-   - Question 9A: Automate data collection
-   - Question 9B: Data visualization
+```bash
+# Clone the repository
+git clone <repository-url>
+cd skilltest-buienradar
 
-# Introduction
+# Install dependencies using uv
+uv sync
+```
 
-Welcome to this Zypp's skill test! This test is designed to assess your proficiency in Python programming and problemsolving with a focus on data integration, data analysis, and automation.
+## 📊 Project Overview
 
-You may have arrived here as you're heading into the second part of our recruitment process. In this second part, we're eager to explore the world of coding together. Our focus will be on observing your coding skills, understanding your thought process, and discovering how you solve problems. In essence, we want to initiate an engaging dialogue about code.
-This skill test serves as a starting point for you to demonstrate your coding skills, but as well for us to show what kind of projects you will encounter during your career at Zypp.
+This is a skill test project focusing on:
 
-## Our expectations
-This project is not designed to be a pass or fail test. There are multiple ways to solve the questions, we want to see
-how you solve them. Based on your answers, we will:
+1. **Data Integration** - ETL pipeline from Buienradar API to SQLite database
+2. **Data Analysis** - Weather data analysis and insights
+3. **Automation/Visualization** - Automated data collection and visualization
 
-- Determine your 'base' level of skills.
-- Have a follow up conversations, were we will talk about the project and the choices you have made.
+### Key Features
 
-# The test: Dutch Weather Analysis
+- Real-time weather data collection from Buienradar API
+- SQLite database with proper schema and relationships
+- Modular ETL pipeline architecture
+- Comprehensive data analysis capabilities
+- Automated data visualization dashboard
 
-## Case introduction
-The Buienradar API provides data from all weather stations in the Netherlands,updated 3 times an hour. You can query the data via the endpoints [json](https://json.buienradar.nl) or [xml](https://xml.buienradar.nl), and it will return the current weather data for each station.
-The goal is to answer some data analysis questions, but we need data for a full day from buienradar. In order to answer the questions, the candidate needs to be able to:
+## 🏗️ Architecture
 
-1. Create a script for importing the data and exporting it to a database.
-2. Model the data in the database, by relating the tables and type casting the data in the proper format.
-3. Automate the script to collect 1 day of data from the buienradar API.
+```
+src/skilltest/
+├── core/                    # Core pipeline components
+│   ├── extract/            # Data extraction (API sources)
+│   ├── transform/          # Data transformation
+│   ├── analysis/           # Data analysis tools
+│   └── pipeline.py         # Main pipeline orchestration
+├── buienradar/             # Buienradar-specific implementations
+├── models/                 # SQLModel database models
+└── database.py             # Database configuration
+```
 
-The test is decomposed into 3 parts.
+## 🔧 Usage
 
-> Note: make sure the code is reproducible for us
+### Running the Data Pipeline
 
-## Instructions:
+```bash
+# Collect weather data
+uv run python -m src.cli
 
-1. This repository contains a set of Python coding tasks related to data integration, data analysis, and automation.
-2. Fork this repository to your GitHub account to get started with the test.
-3. Complete the tasks within the specified time frame, there is a **4 hours** timecap.
-4. Commit your solutions to your forked repository.
-5. In the test you will create a database, please be sure to also commit the database to the repository.
-6. Send the link to your forked repository to <hello@zypp.io>
+# Or use the CLI directly
+uv run python src/cli/main.py
+```
 
-## Guidelines:
+### Database Operations
 
-- You are encouraged to use Python 3.10 and any relevant libraries or frameworks for the tasks.
-- Each section starts with a time estimation. This is not a hard requirement, but meant to give you clarity in how much time a topic should take.
-- Feel free to reach out to the recruitment team if you have any questions or need clarification.
-- The repository is public, and other candidates may also have access to it. **Avoid sharing your solutions or collaborating with others during the test** to maintain fairness.
+```bash
+# Run database migrations
+uv run alembic upgrade head
 
-Best of luck with the skill test! We are excited to see your engineering skills in action.
+# Create new migration
+uv run alembic revision --autogenerate -m "description"
+```
 
----
+### Data Analysis
 
-## Part 1: Data Integration
+```bash
+# Start Jupyter notebook for analysis
+uv run jupyter notebook analysis.ipynb
+```
 
-**Time Estimation:** 2 hours
+## 🧪 Testing
 
-In this section, you will design the datamodel and ETL code for answering the questions in Part 2. This step is the most
-time consuming in this project, or general data-analysis projects.
+The project includes comprehensive tests using modern pytest features.
 
-**Question 1:**
-Create a dataset with the following information about the weather _station measurements_.
+### Running Tests
 
-- measurementid (not in dataset by default)
-- timestamp
-- temperature
-- groundtemperature
-- feeltemperature
-- windgusts
-- windspeedBft
-- humidity
-- precipitation
-- sunpower
-- stationid
+```bash
+# Run all tests
+PYTHONPATH=src uv run pytest
 
-**Question 2:**
-Create a dataset with the information about the _weather stations_:
+# Run with verbose output
+PYTHONPATH=src uv run pytest -v
 
-- stationid
+# Run specific test file
+PYTHONPATH=src uv run pytest tests/src/core/test_pipeline.py -v
+
+# Run tests by marker
+PYTHONPATH=src uv run pytest -m "not slow"
+PYTHONPATH=src uv run pytest -m "unit"
+```
+
+### Test Features
+
+- **Modern pytest features**: Fixtures, parametrization, markers
+- **Comprehensive mocking**: Database operations, API calls
+- **Integration tests**: End-to-end pipeline testing
+- **Parametrized tests**: Multiple data scenarios
+- **Custom markers**: Unit, integration, slow tests
+
+### Test Coverage
+
+Tests cover:
+- ✅ Pipeline initialization and configuration
+- ✅ Data extraction from sources
+- ✅ Data transformation operations
+- ✅ Database operations and session management
+- ✅ Error handling and edge cases
+- ✅ Integration scenarios
+
+## 📋 Data Models
+
+### Weather Stations
+- stationid (Primary Key)
 - stationname
-- lat
-- lon
-- regio
+- latitude/longitude
+- region
 
-**Question 3:**
-Store the measurements data and the station data in an SQL database. Use .sqlite for the database. Consider using index, Primary Key, and defining the relationship between the two tables.
+### Station Measurements
+- measurementid (Generated)
+- timestamp
+- temperature, ground temperature, feel temperature
+- wind speed, wind gusts
+- humidity, precipitation
+- sun power
+- stationid (Foreign Key)
 
-Note: if you are not sure how to create a local database, store the data in a format you are familiar with and save it in a `data` folder
+## 🔍 Analysis Questions Answered
 
-**Question 4:**
-Create an ERD  of the SQL database you created. Tip: you can use [draw.io](https://app.diagrams.net/) for making the diagram.
+- Q5: Which weather station recorded the highest temperature?
+- Q6: What is the average temperature across all stations?
+- Q7: Station with biggest difference between feel and actual temperature?
+- Q8: Which weather station is located in the North Sea?
+
+## 📈 Visualization
+
+The project includes:
+- Power BI dashboard (`visualization.pbix`)
+- Jupyter notebook analysis (`analysis.ipynb`)
+- Automated chart generation
+
+## 🛠️ Development
+
+### Code Quality
+
+```bash
+# Run linting (if configured)
+uv run ruff check .
+
+# Format code (if configured)
+uv run ruff format .
+```
+
+### Adding Dependencies
+
+```bash
+# Add runtime dependency
+uv add package-name
+
+# Add development dependency
+uv add --dev package-name
+
+# Update dependencies
+uv lock --upgrade
+```
+
+### Project Structure Commands
+
+```bash
+# List all dependencies
+uv pip list
+
+# Show dependency tree
+uv pip show --files package-name
+
+# Export requirements
+uv pip freeze > requirements.txt
+```
+
+## 📡 API Information
+
+- **Buienradar JSON API**: https://json.buienradar.nl
+- **Buienradar XML API**: https://xml.buienradar.nl
+- **Update Frequency**: Every 20 minutes (3 times per hour)
+
+## 🗃️ Database
+
+- **Type**: SQLite
+- **File**: `weather_data.db`
+- **Migrations**: Managed with Alembic
+- **Schema**: See ERD.md for entity relationship diagram
+
+## 📝 Configuration
+
+Configuration is managed through:
+- `pyproject.toml` - Project dependencies and metadata
+- `alembic.ini` - Database migration settings
+- `pytest.ini` - Test configuration
+- `CLAUDE.md` - Development context and guidelines
+
+## 🚨 Troubleshooting
+
+### Common Issues
+
+1. **Import errors when running tests**:
+   ```bash
+   # Make sure PYTHONPATH includes src
+   PYTHONPATH=src uv run pytest
+   ```
+
+2. **Database connection issues**:
+   ```bash
+   # Run migrations
+   uv run alembic upgrade head
+   ```
+
+3. **API rate limiting**:
+   - Buienradar updates every 20 minutes
+   - Avoid excessive API calls
+
+### Dependencies Issues
+
+```bash
+# Clear uv cache
+uv cache clean
+
+# Reinstall dependencies
+rm -rf .venv uv.lock
+uv sync
+```
+
+## 📄 License
+
+This project is part of a skill test for Zypp's recruitment process.
+
+## 🤝 Contributing
+
+This is a skill test project with specific requirements. Follow the existing code patterns and ensure all tests pass before submitting changes.
 
 ---
 
-## Part 2: Data Analysis
-This section is about performing data analysis on your gathered data. 
-
-**Time Estimation:** 1 hour  
-In this part you are required to answer questions based on data collected in step 1.
-
-**Question 5:**
-Which weather station recorded the highest temperature?
-
-**Question 6:**
-What is the average temperature?
-
-**Question 7:**
-What is the station with the biggest difference between feel temperature and the actual temperature?
-
-**Question 8:**
-Which weather station is located in the North Sea?
-
----
-
-## Part 3: Automation or Data Visualization
-
-**Time estimation:** 1 hour  
-
-In this section you can choose between an engineering or visualization question based on your background. We recommend the data engineers to choose the automation question and the BI developers to choose for the visualization question. The software developers and data scientist can choose based on their preference.
-
-**Question 9A: Automation**
-
-Describe how you would automate the population of the database with all measurements for a specific day.
-In other words, the script you created in question 1 should be used to fetch the weather station data multiple times per hour, as the weather station data is updated every 20 minutes.
-
-Feel free to use a flowchat to show the steps of your approach.
-
-**Question 9B: Data Visualization**
-
-Visualize your analysis of part 2. You can choose between a data visualization tool which you are familiar with and you see fit. It can also be a visualization library in Python or JavaScripts for example. 
-
-Bonuspoints if you manage to do both!
+**Time Cap**: 4 hours  
+**Main Technologies**: Python, SQLite, uv, pytest, SQLModel, Alembic
