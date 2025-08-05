@@ -31,6 +31,7 @@ class Pipeline(Generic[OutputT]):
             data = transformer.transform(data)
 
         # TODO: Move this logic to load and add for example batching logic
+        # TODO: Add upsert logic as it isn't built into sql model
         with Session(engine) as session:
             for item in data:
                 session.merge(item)
