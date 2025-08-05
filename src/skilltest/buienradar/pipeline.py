@@ -30,6 +30,8 @@ class BuienradarPipeline:
                 StationMeasurement, Measurement, self.transform_data_to_measurement
             )
         )
+
+        # as an improvement the common functionality of these pipelines can be merged in the execution stage
         wheather_station_pipeline.run()
         measurement_pipeline.run()
 
