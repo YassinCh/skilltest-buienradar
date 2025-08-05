@@ -6,7 +6,6 @@ from .abstract_transformer import AbstractTransformer
 
 
 class FromJsonToEntryTransformer(AbstractTransformer[FetchItem, FetchItem]):
-    # TODO: Better name for this class
     def __init__(self, data_path: Sequence[str]):
         self.data_path = data_path
 

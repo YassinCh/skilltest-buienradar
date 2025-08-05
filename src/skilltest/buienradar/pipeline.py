@@ -1,7 +1,7 @@
 from ..config import settings
-from ..core.extract import FetchItem, HttpSource
-from ..core.pipeline import Pipeline
-from ..core.transform import (
+from ..core.etl.extract import FetchItem, HttpSource
+from ..core.etl.pipeline import Pipeline
+from ..core.etl.transform import (
     DictToPydanticTransformer,
     FromJsonToEntryTransformer,
     PydanticToPydanticTransformer,
@@ -14,24 +14,24 @@ class BuienradarPipeline:
     """The complete pipeline to load buienradar data"""
 
     def run(self) -> None:
+        json_transformer = FromJsonToEntryTransformer(("actual", "stationmeasurements"))
+
+        transform_to_schema = DictToPydanticTransformer(StationMeasurement)
+
         source = HttpSource(url=settings.source_url)
         initial_pipeline: Pipeline[FetchItem] = Pipeline(source)
-        base_pipeline = initial_pipeline.add(
-            FromJsonToEntryTransformer(("actual", "stationmeasurements"))
-        ).add(DictToPydanticTransformer(StationMeasurement))
+        base_pipeline = initial_pipeline.add(json_transformer).add(transform_to_schema)
 
-        wheather_station_pipeline = base_pipeline.add(
-            PydanticToPydanticTransformer(
-                StationMeasurement,
-                WeatherStation,
-                self.transform_data_to_weather_station,
-            )
+        weather_station_transformer = PydanticToPydanticTransformer(
+            StationMeasurement,
+            WeatherStation,
+            self.transform_data_to_weather_station,
         )
-        measurement_pipeline = base_pipeline.add(
-            PydanticToPydanticTransformer(
-                StationMeasurement, Measurement, self.transform_data_to_measurement
-            )
+        measurement_transformer = PydanticToPydanticTransformer(
+            StationMeasurement, Measurement, self.transform_data_to_measurement
         )
+        wheather_station_pipeline = base_pipeline.add(weather_station_transformer)
+        measurement_pipeline = base_pipeline.add(measurement_transformer)
 
         # as an improvement the common functionality of these pipelines can be merged in the execution stage
         wheather_station_pipeline.run()

@@ -8,9 +8,9 @@ from unittest.mock import Mock, patch
 import pytest
 from sqlmodel import Session
 
-from src.skilltest.core.extract import AbstractSource, FetchItem
-from src.skilltest.core.pipeline import Pipeline
-from src.skilltest.core.transform import AbstractTransformer
+from src.skilltest.core.etl.extract import AbstractSource, FetchItem
+from src.skilltest.core.etl.pipeline import Pipeline
+from src.skilltest.core.etl.transform import AbstractTransformer
 
 T = TypeVar("T")
 

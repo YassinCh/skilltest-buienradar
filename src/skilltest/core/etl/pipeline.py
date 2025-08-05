@@ -1,9 +1,7 @@
 from typing import Any, Generic, Sequence, TypeVar
 
-from sqlmodel import Session
-
-from ..database import engine
 from .extract import AbstractSource
+from .load import ModelLoader
 from .transform import AbstractTransformer
 
 OutputT = TypeVar("OutputT")
@@ -14,9 +12,11 @@ class Pipeline(Generic[OutputT]):
     def __init__(
         self,
         source: AbstractSource,
+        loader: ModelLoader = ModelLoader(),
         transformers: Sequence[AbstractTransformer[Any, Any]] = (),
     ):
         self.source = source
+        self.loader = loader
         self.transformers = list(transformers)
 
     def add(
@@ -29,10 +29,4 @@ class Pipeline(Generic[OutputT]):
         data = self.source.fetch()
         for transformer in self.transformers:
             data = transformer.transform(data)
-
-        # TODO: Move this logic to load and add for example batching logic
-        # TODO: Add upsert logic as it isn't built into sql model
-        with Session(engine) as session:
-            for item in data:
-                session.merge(item)
-            session.commit()
+        self.loader.load_into_db(data)
