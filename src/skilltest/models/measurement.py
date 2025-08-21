@@ -17,8 +17,7 @@ class Measurement(SQLModel, table=True):
     groundtemperature: Optional[float] = None
     feeltemperature: Optional[float] = None
     windgusts: Optional[float] = None
-    windspeedBft: Optional[int] = None
+    windspeedbft: Optional[int] = None
     humidity: Optional[float] = None
-    precipitation: Optional[float] = None
     sunpower: Optional[float] = None
     stationid: int = Field(foreign_key="weatherstation.stationid")

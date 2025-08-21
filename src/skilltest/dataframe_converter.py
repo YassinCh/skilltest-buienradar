@@ -1,21 +1,17 @@
 from typing import Type
 
 import polars as pl
-from sqlmodel import SQLModel
+from sqlmodel import SQLModel, select
 
-from ...database import engine as default_engine
+from .database import engine as default_engine
 
 
 class DataFrameConvertor:
-    # TODO: Improve this class
     @staticmethod
     def get_dataframe(model: Type[SQLModel]) -> pl.DataFrame:
         """Get Polars DataFrame from SQLModel table"""
-        table_name = model.__tablename__
-        query = f"SELECT * FROM {table_name}"
         with default_engine.connect() as conn:
-            df = pl.read_database(query, connection=conn)
-        return df
+            return pl.read_database(select(model), connection=conn)
 
     @staticmethod
     def get_joined_dataframe(
